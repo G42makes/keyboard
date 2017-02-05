@@ -46,7 +46,7 @@ for i in range(0,5):
 
 #Now we wire up the reset switch
 reset_res = res(2, value='10K')
-reset_sw = Part('device', 'SW_PUSH', footprint='Buttons_Switches_SMD:SW_SPST_TL3342')
+reset_sw = Part('device', 'SW_PUSH', footprint='Buttons_Switches_SMD:SW_SPST_PTS645')
 reset_res[0][1,2] += vcc, atmega['RESET']
 reset_sw[1,2] += gnd, atmega['RESET']
 #this one is used to go into the bootloader on Reset
@@ -89,7 +89,7 @@ for ix in range(0, x):
 		keys_dio[ix][iy][1] += drain[iy]	#Hook up the drain to the other end of the diode
 
 		#the library is sub optimal on the key names, fix that here
-		keys[ix][iy].ref = 'K' + str((ix * y) + iy)
+		keys[ix][iy].ref = 'K' + str((ix * y) + iy + 1)
 
 #In a slight change from the tutorial source, I will be connecting the drive(col) to PB? and drain(row) to PD?
 #It allows us to grow the keyboard up to 8 x 8 = 64 keys in this code
@@ -107,5 +107,5 @@ for iy in range(0, y):
 ERC()
 
 #print it out
-generate_netlist(sys.stdout)
+generate_netlist()
 
