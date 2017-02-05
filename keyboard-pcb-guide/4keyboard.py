@@ -41,7 +41,7 @@ crystal_decouple[1][1,2] += crystal[2], gnd
 vcc_decouple = cap(5, value='0.1uf')
 vcc_decouple[4].value = '4.7uf'	#just to keep it in the array, we tweak just the one
 #link all them up to the power and ground
-for i in range(0,4):
+for i in range(0,5):
 	vcc_decouple[i][1,2] += vcc, gnd
 
 #Now we wire up the reset switch
