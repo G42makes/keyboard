@@ -81,7 +81,7 @@ for i in range(0, x):
 	keys[i] = key(y)
 	keys_dio[i] = dio(y)
 drive = Bus('KEY_Drive', x)	#Create the nets in a bus for the drive side
-drain = Bus('Key_Drain', y)	#Create the nets in a bus for the drain side
+drain = Bus('KEY_Drain', y)	#Create the nets in a bus for the drain side
 for ix in range(0, x):
 	for iy in range(0, y):
 		keys[ix][iy][2] += keys_dio[ix][iy][2]	#Hook the diodes up to the keys
