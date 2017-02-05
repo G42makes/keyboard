@@ -91,3 +91,4 @@ ENV/
 #skidl logging and ERC files
 *.log
 *.erc
+*.net
