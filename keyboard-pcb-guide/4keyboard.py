@@ -8,10 +8,10 @@ from os.path import dirname, realpath, sep
 keyboardParts_lib = dirname(realpath(__file__)) + sep + 'kicad-libraries/kicad_lib_tmk/keyboard_parts.lib'
 
 #From the skidl docs we will create some templates, edited to not do the footprints yet, but those will be added
-res = Part('device', 'R', dest=TEMPLATE)
-cap = Part('device', 'C', dest=TEMPLATE)
-dio = Part('device', 'D', dest=TEMPLATE)
-key = Part(keyboardParts_lib, '\~KEYSW', dest=TEMPLATE)
+res = Part('device', 'R', dest=TEMPLATE, footprint='Resistors_SMD:R_0805')
+cap = Part('device', 'C', dest=TEMPLATE, footprint='Capacitors_SMD:C_0805')
+dio = Part('device', 'D', dest=TEMPLATE, footprint='keyboard_parts:D_SOD123_axial')
+key = Part(keyboardParts_lib, '\~KEYSW', dest=TEMPLATE, footprint='httpstr:Mx_Alps_100')
 
 #We create a function to return a button with diode
 #@SubCircuit
@@ -25,11 +25,11 @@ vcc = Net('+5V')
 vcc.drive = POWER
 
 #The first component from the howto is the ATMEGA32U4, let's add that
-atmega = Part('atmel', 'ATmega32U4')	#TODO footprint
+atmega = Part('atmel', 'ATmega32U4', footprint='Housings_QFP:TQFP-44_10x10mm_Pitch0.8mm')
 atmega[:] += NC	#we connect all the pins to the NC net, which is overwritten if we use the pin
 
 #add in the timing circuit
-crystal = Part(keyboardParts_lib, 'XTAL_GND')
+crystal = Part(keyboardParts_lib, 'XTAL_GND', footprint='Crystals:crystal_FA238-TSX3225')
 crystal_decouple = cap(2, value='22pf')
 #connect these all up
 crystal[1,2,3] += atmega['XTAL1', 'XTAL2'], gnd
@@ -46,14 +46,14 @@ for i in range(0,4):
 
 #Now we wire up the reset switch
 reset_res = res(2, value='10K')
-reset_sw = Part('device', 'SW_PUSH')
+reset_sw = Part('device', 'SW_PUSH', footprint='Buttons_Switches_SMD:SW_SPST_TL3342')
 reset_res[0][1,2] += vcc, atmega['RESET']
 reset_sw[1,2] += gnd, atmega['RESET']
 #this one is used to go into the bootloader on Reset
 reset_res[1][1,2] += gnd, atmega[33]	#I use the number here because the name sucks for this
 
 #Add a USB port
-usb_conn = Part(keyboardParts_lib, '\~USB_mini_micro_B')
+usb_conn = Part(keyboardParts_lib, '\~USB_mini_micro_B', footprint='keyboard_parts:USB_miniB_hirose_5S8')
 usb_res = res(2, value='22')
 usb_cap = cap(value='1uf')
 #connect it all up
@@ -87,6 +87,9 @@ for ix in range(0, x):
 		keys[ix][iy][2] += keys_dio[ix][iy][2]	#Hook the diodes up to the keys
 		keys[ix][iy][1] += drive[ix]		#Hook up the drive bus to the keys input
 		keys_dio[ix][iy][1] += drain[iy]	#Hook up the drain to the other end of the diode
+
+		#the library is sub optimal on the key names, fix that here
+		keys[ix][iy].ref = 'K' + str((ix * y) + iy)
 
 #In a slight change from the tutorial source, I will be connecting the drive(col) to PB? and drain(row) to PD?
 #It allows us to grow the keyboard up to 8 x 8 = 64 keys in this code
