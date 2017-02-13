@@ -2,8 +2,9 @@
 
 #First we set some vars to effect output.
 # a full 104 key board can be done with x = 13, y = 8, so this should be enough
-keys_x = 14	#Number of columns of keys on the device, max 14
-keys_y = 8	#Number of rows of keys on the device, max 8
+# of course you will have to place them all by hand in the PCB editor, have fun if you go that high
+keys_x = 2	#Number of columns of keys on the device, max 14
+keys_y = 2	#Number of rows of keys on the device, max 8
 
 #Let's start with getting the SKiDL library
 from skidl import *
